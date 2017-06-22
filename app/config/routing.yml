@@ -1,0 +1,43 @@
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+
+connexion:
+    defaults: { _controller: AppBundle:Default:connexion }
+    path: /connexion
+
+deconnexion:
+    defaults: { _controller: AppBundle:Dresseur:deconnexion }
+    path: /deconnexion
+
+inscription:
+    defaults: { _controller: AppBudle:Dresseur:inscription }
+    path: /inscription
+
+pokemons:
+    defaults: { _controller: AppBundle:Dresseur:getPokemons }
+    path: /{dresseur}/pokemons
+
+pokemon:
+    defaults: { _controller: AppBundle:Dresseur:getPokemon }
+    path: /{dresseur}/pokemon/{id}
+
+entrainer:
+    defaults: { _controller: AppBundle:Dresseur:entrainerPokemon }
+    path: /{dresseur}/pokemon/{id}/entrainer
+
+mettre_en_vente:
+    defaults: { _controller: AppBundle:Dresseur:mettreEnVentePokemon }
+    path: /{dresseur}/pokemon/{id}/mettre_en_vente
+
+annuler_vente:
+    defaults: { _controller: AppBundle:Dresseur:annulerVentePokemon }
+    path: /{dresseur}/pokemon/{id}/annuler_vente
+
+annonces:
+    defaults: { _controller: AppBundle:Annonces:get }
+    path: /{dresseur}/annonces
+
+acheter:
+    defaults: { _controller: AppBundle:Dresseur:acheterPokemon }
+    path: /{dresseur}/annonces/acheter/{id}

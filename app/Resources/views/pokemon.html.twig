@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="pokemon-detail">
+        <img src="http://assets.pokemon.com/assets/cms2/img/pokedex/full/{{ "%03d" | format(pokemon.numero) }}.png">
+
+        <div>
+            <h2>{{ pokemon.nom }}<span>#{{ pokemon.id }}</h2>
+
+            <p>
+                <span class="number">Pokémon N°{{ pokemon.numero }}</span> &middot;
+                <span class="evolution">{{ pokemon.evolution }}</span>
+            </p>
+
+            <ul class="types">
+                {% for type in pokemon.types %}
+                    <li>{{ type }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <ul class="stats">
+        <li class="stat-gender {{ pokemon.sexe | lower }}>"><i class="fa fa-fw fa-{% if pokemon.sexe == "Male" %}mars{% else %}venus{% endif %}"></i></li>
+        <li class="stat-level"><span>Niveau</span><span>{{ pokemon.niveau }}</span></li>
+        <li class="stat-xp">
+            <div id="xp-graph"></div>
+            <div class="inner">
+                <div><span>{{ pokemon.xp }}</span><span><?= $ceilxp ?></span></div>
+                <div>XP</div>
+            </div>
+        </li>
+    </ul>
+
+{% endblock %}

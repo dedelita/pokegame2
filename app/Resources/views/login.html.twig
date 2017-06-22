@@ -1,0 +1,13 @@
+{% extends 'default/index.html.twig' %}
+
+{% block body %}
+    <div>{{ error }}</div>
+    <form action="{{ path('connexion') }}" method="POST">
+        <div class="login-form">
+            <label>Login</label> <input type="text" name="login" required>
+            <label>Password</label> <input type="password" name="password" required>
+        </div>
+
+        <input type="submit" value="Se connecter">
+    </form>
+{% endblock %}

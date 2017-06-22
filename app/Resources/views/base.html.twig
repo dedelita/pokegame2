@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}PokéGame{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,500|Raleway:300,900,900italic">
+        <link rel="stylesheet" href="{{ asset('static/reset.css') }}">
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('static/style.css') }}">
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+
+    <body class="{% block class %}home{% endblock %}">
+        <header>
+            <div class="wrap">
+                <h1>PokéGame</h1>
+
+                <nav class="user">
+                    {% block menu %}{% endblock %}
+                </nav>
+            </div>
+        </header>
+
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+        <footer>
+            <p>Techno Web 2017 - L3 MIAGE Apprentissage - Université Paris I Panthéon-Sorbonne<p>
+
+            <p>Delphine Martinez Parra - Sami Romdhana</p>
+        </footer>
+    </body>
+</html>
