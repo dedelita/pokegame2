@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{% block class %}pokemons{% endblock %}
 {% block body %}
-    <h2>Mes Pokémons</h2>
+    <h2>Mes Pokémons </h2>
 
     <ul class="pokemon-list">
     {% for pokemon in pokemons %}
         <li>
-            <a href={{ path('pokemon', {'dresseur' : dresseur ,'id' : pokemon.id}) }}>
+            <a href={{ path('pokemon', {'id' : pokemon.id}) }}>
                 <img src="http://assets.pokemon.com/assets/cms2/img/pokedex/full/{{ "%03d" | format(pokemon.numero) }}.png">
                 <p>{{ pokemon.nom }} <span>#{{ pokemon.id }}</span></p>
             </a>

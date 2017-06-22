@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block class %}annonces{% endblock %}
+
+{% block body %}
+    <h2>Achète de nouveaux Pokémons !</h2>
+
+    {% if annonces is empty %}
+        <p class="no-pokemon-available">Il n'y a pas de pokémons en vente pour l'instant</p>
+    {% else %}
+        {% for pokemon in annonces %}
+            <div class="pokemon-on-sale">
+                <div class="header">Espèce</div>
+                <div class="header">Dresseur</div>
+                <div class="header">Niveau</div>
+                <div class="header">XP</div>
+                <div class="header">Prix</div>
+
+                <div>{{ pokemon.nom }}</div>
+                <div>{{ pokemon.idDresseur }}</div>
+                <div>{{ pokemon.niveau }}</div>
+                <div>{{ pokemon.xp }}</div>
+                <div>
+                    {% if nbPieces >= pokemon.prixVente %}
+                        <a href="{{ path('acheter', {'id' : pokemon.id, 'dresseur' : pokemon.idDresseur, 'prixVente' : pokemon.prixVente}) }}">
+                            {{ pokemon.prixVente }} <i class="fa fa-fw fa-usd"></i>
+                        </a>
+                    {% else %}
+                        <span>{{ pokemon.prixVente }} <i class="fa fa-fw fa-usd"></i></span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if pokemons %}
+        <hr>
+
+        <h2>Mes pokémons en vente</h2>
+
+        <div class="my pokemon-on-sale">
+            <div class="header">Espèce</div>
+            <div class="header">Niveau</div>
+            <div class="header">XP</div>
+            <div class="header">Prix</div>
+            <div></div>
+            {% for pokemon in pokemons %}
+                <div>{{ pokemon.nom }}</div>
+                <div>{{ pokemon.niveau }}</div>
+                <div>{{ pokemon.xp }}</div>
+                <div><span>{{ pokemon.prixVente }} <i class="fa fa-fw fa-usd"></i></span></div>
+                <div><a href='{{ path("annuler_vente", {'id' : pokemon.id}) }}'>Annuler</a></div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

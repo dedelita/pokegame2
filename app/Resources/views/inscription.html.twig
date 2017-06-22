@@ -3,22 +3,18 @@
 {% block body %}
     <h2>Devenez Dresseur dès maintenant !</h2>
 
-    <form action="{{ path('inscription') }}" method="POST">
-        <div class="signup-form">
-            <label>Nom</label> <input type="text" name="login" required>
-            <label>Mail</label> <input type="email" name="email" required>
-            <label>Mot de passe</label> <input type="password" name="password" required>
-            <label>Confirmer</label> <input type="password" name="conf_password" required>
+    {{ form(form, {'method': 'POST'}) }}
 
-            <label>Votre 1<sup>er</sup> pokémon</label>
-            <select name="pokemon">
-                <option value="Bulbizarre">Bulbizarre</option>
-                <option value="Carapuce">Carapuce</option>
-                <option value="Salamèche">Salamèche</option>
-            </select>
-        </div>
-
-        <input type="submit" value="Go">
-    </form>
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+<div class="login-form">
+    {{ form_row(form.login) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+    {{ form_row(form.conf_password) }}
+    {{ form_row(form.pokemon) }}
+</div>
+    {{ form_row(form.submit) }}
+    {{ form_end(form) }}
 
 {% endblock %}

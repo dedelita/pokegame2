@@ -7,10 +7,17 @@
  */
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Dresseur;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Form\FormError;
 
 class DresseurController extends Controller
 {
@@ -18,72 +25,128 @@ class DresseurController extends Controller
         $pokemonsRepository = $this->getDoctrine()->getRepository('AppBundle:Pokemon');
         $pokemons = $pokemonsRepository->findByIdDresseur($id);
 
-        $especePokemonRepository = $this->getDoctrine()->getRepository('AppBundle:EspecePokemon');
-
         $poks = array();
-        $pok = array();
-
         foreach ($pokemons as $pokemon) {
-            $pok["id"] = $pokemon->getId();
-            $pok["idDresseur"] = $pokemon->getIdDresseur();
-            $pok["numero"] = $pokemon->getIdEspece();
-            $pok["sexe"] = ($pokemon->getSexe() == "Male") ? "Male" : "Female";
-            $pok["xp"] = $pokemon->getXp();
-            $pok["niveau"] = $pokemon->getNiveau();
-            $pok["prixVente"] = $pokemon->getPrixvente();
-            $pok["enVente"] = $pokemon->getEnvente();
-            $pok["dernierEntrainement"] = $pokemon->getDernierentrainement();
-
-            $especePokemon = $especePokemonRepository->findById($pokemon->getIdEspece())[0];
-            $pok["types"] = array($especePokemon->getType1(), $especePokemon->getType2());
-            $pok["nom"] = $especePokemon->getNom();
-            $pok["evolution"] = $especePokemon->getEvolution();
-            $pok["courbe_XP"] = $especePokemon->getCourbeXp();
-
-            $poks[] = $pok;
+            $poks[] = $pokemonsRepository->getInfosPokemon($pokemon->getId());
         }
 
         return $poks;
     }
 
     public function getPokemonsAction(Request $request) {
-        $dresseur = $request->get("dresseur");
-
-        $pokemons = $this->getPokemons($dresseur);
-
+        $dresseur = $this->getUser();
+        $id = $dresseur->getId();
+        $pokemons = $this->getPokemons($id);
+        
         return $this->render('pokemons.html.twig', array("dresseur" => $dresseur, "pokemons" => $pokemons));
     }
 
     public function getPokemonAction(Request $request) {
-        $dresseur = $request->get("dresseur");
         $id = $request->get('id');
 
         $pokemonsRepository = $this->getDoctrine()->getRepository('AppBundle:Pokemon');
-        $pokemon = $pokemonsRepository->find($id);
+        $pokemon = $pokemonsRepository->getInfosPokemon($id);
 
-        $pok["id"] = $pokemon->getId();
-        $pok["idDresseur"] = $pokemon->getIdDresseur();
-        $pok["numero"] = $pokemon->getIdEspece();
-        $pok["sexe"] = ($pokemon->getSexe() == "Male") ? "Male" : "Female";
-        $pok["xp"] = $pokemon->getXp();
-        $pok["niveau"] = $pokemon->getNiveau();
-        $pok["prixVente"] = $pokemon->getPrixvente();
-        $pok["enVente"] = $pokemon->getEnvente();
-        $pok["dernierEntrainement"] = $pokemon->getDernierentrainement();
+        return $this->render('pokemon.html.twig', array("pokemon" => $pokemon, "form" => null));
+    }
 
-        $especePokemonRepository = $this->getDoctrine()->getRepository('AppBundle:EspecePokemon');
-        $especePokemon = $especePokemonRepository->findById($pokemon->getIdEspece())[0];
-        
-        $pok["types"] = array($especePokemon->getType1(), $especePokemon->getType2());
-        $pok["nom"] = $especePokemon->getNom();
-        $pok["evolution"] = $especePokemon->getEvolution();
-        $pok["courbe_XP"] = $especePokemon->getCourbeXp();
+    public function loginAction(Request $request, AuthenticationUtils $authUtils) {
+        $error = $authUtils->getLastAuthenticationError();
 
-        return $this->render('pokemon.html.twig', array("pokemon" => $pok));
+        $lastUsername = $authUtils->getLastUsername();
+
+        return $this->render('security/login.html.twig', array(
+            'last_username' => $lastUsername,
+            'error'         => $error,
+        ));
     }
 
     public function inscriptionAction(Request $request) {
+        $dresseur = new Dresseur();
+        $form = $this->createFormBuilder($dresseur)
+            ->add("login", TextType::class, array("label" => "Nom"))
+            ->add("email", EmailType::class, array("label" => "Mail"))
+            ->add("password", PasswordType::class, array("label" => "Mot de passe"))
+            ->add("conf_password", PasswordType::class, array("label" => "Confirmer", "mapped" => false))
+            ->add("pokemon", ChoiceType::class, array("label" => "Votre 1er pokémon",
+                'choices' => array("Bulbizarre" => "Bulbizarre", "Carapuce" => "Carapuce", "Salamèche" => "Salamèche"), "mapped" => false))
+            ->add("submit", SubmitType::class, array("label" => "Go"))
+            ->getForm();
 
-        return $this->render("inscription.html.twig");
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $dre = $em->getRepository("AppBundle:Dresseur")->findOneByEmail($dresseur->getEmail());
+            if($dre)
+                $form->addError(new FormError('Mail déjà utilisé'));
+
+            $dre = $em->getRepository("AppBundle:Dresseur")->findOneByLogin($dresseur->getLogin());
+            if($dre)
+                $form->addError(new FormError('Nom déjà utilisé'));
+
+            else {
+                if($form->get("password")->getData() == $form->get("conf_password")->getData()) {
+                    $dresseur->setNbPieces(5000);
+
+                    $em->persist($dresseur);
+                    $em->flush();
+
+                    $dre = $em->getRepository("AppBundle:Dresseur")->findOneByEmail($dresseur->getEmail());
+
+                    $em->getRepository("AppBundle:Pokemon")->newPokemon($dre->getId(), $form->get("pokemon")->getData());
+                } else {
+                    $form->addError(new FormError('Les mots de passe ne correspondent pas'));
+                }
+            }
+            return $this->redirectToRoute("connexion");
+        } else
+            return $this->render("inscription.html.twig", array('form' => $form->createView()));
+    }
+
+    public function entrainerPokemonAction(Request $request) {
+        $id = $request->get('id');
+
+        $this->getDoctrine()->getRepository("AppBundle:Pokemon")->entrainerPokemon($id);
+
+        return $this->redirectToRoute('pokemon', array("id" => $id, "form" => null));
+    }
+
+    public function mettreEnVentePokemonAction(Request $request) {
+        $id = $request->get('id');
+        $pokemonRepository = $this->getDoctrine()->getRepository("AppBundle:Pokemon");
+        $pokemon = $pokemonRepository->find($id);
+
+        $form = $this->createFormBuilder()
+            ->add("prix", TextType::class, array("label" => "Prix de vente", "data" => $pokemon->getPrixVente()))
+            ->add("submit", SubmitType::class, array("label" => "Mettre en vente"))
+            ->getForm();
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $pokemonRepository->mettreEnVentePokemon($id, $form->get("prix")->getData());
+            return $this->redirectToRoute("pokemon", array("id" => $id, "form" => null));
+        }
+        return $this->render('pokemon.html.twig', array("id" => $id, "pokemon" => $pokemonRepository->getInfosPokemon($id), "form" => $form->createView()));
+    }
+
+    public function annulerVentePokemonAction(Request $request) {
+        $id = $request->get('id');
+
+        $this->getDoctrine()->getRepository("AppBundle:Pokemon")->annulerVentePokemon($id);
+
+        if($request->get('_route') == "pokemon")
+            return $this->redirectToRoute('pokemon', array("id" => $id, "form" => null));
+        else
+            return $this->redirectToRoute('annonces');
+    }
+
+    public function acheterPokemonAction(Request $request) {
+        $id = $request->get('id');
+        $idDresseur = $this->getUser()->getId();
+
+        $pokemonRepository = $this->getDoctrine()->getRepository("AppBundle:Pokemon");
+        $pokemonRepository->acheterPokemon($id, $idDresseur);
+
+        return $this->redirectToRoute('annonces');
     }
 }

@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block class %}pokemon-detail{% endblock %}
+
 {% block body %}
     <div class="pokemon-detail">
         <img src="http://assets.pokemon.com/assets/cms2/img/pokedex/full/{{ "%03d" | format(pokemon.numero) }}.png">
@@ -32,4 +34,50 @@
         </li>
     </ul>
 
+    <script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
+
+    <script>
+        var XP = {{ pokemon.xp }},
+                XPMax = {{ pokemon.ceilxp }};
+
+        window.addEventListener("load", function() {
+            var bar = new ProgressBar.Circle('#xp-graph', {
+                strokeWidth: 5,
+                easing: 'easeInOut',
+                duration: 1400,
+                color: '#DD2828',
+                trailColor: '#CCC',
+                trailWidth: 1,
+                svgStyle: null
+            });
+
+            bar.animate(XP / XPMax);
+        })
+    </script>
+
+    <div class="actions">
+        {% if pokemon.enVente == false %}
+            {% if pokemon.timeToTrain %}
+                <span class="training-wait">
+                    <i class="fa fa-fw fa-clock-o"></i>
+                    {{ pokemon.timeToTrain }} minutes
+                </span>
+            {% else %}
+                <a href='{{ path('entrainer', {'id' : pokemon.id}) }}'>Entraîner</a>
+            {% endif %}
+            <a href='{{ path('mettre_en_vente', {'id' : pokemon.id}) }}'>Mettre en vente</a>
+        {% else %}
+            <span>Mis en vente</span>
+            <a href='{{ path('annuler_vente', {'id' : pokemon.id}) }}'>Annuler vente</a>
+        {% endif %}
+    </div>
+
+    {% if form %}
+        {{ form(form, {'method': 'POST'}) }}
+
+        {{ form_start(form) }}
+        {{ form_row(form.prix) }}
+        {{ form_row(form.submit) }}
+        {{ form_end(form) }}
+    {% endif %}
 {% endblock %}

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Pokemon
  *
  * @ORM\Table(name="pokemon")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PokemonRepository")
  */
 class Pokemon
 {
@@ -52,21 +52,21 @@ class Pokemon
      *
      * @ORM\Column(name="prixVente", type="integer", nullable=true)
      */
-    private $prixvente;
+    private $prixVente;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="enVente", type="boolean", nullable=false)
      */
-    private $envente;
+    private $enVente;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="dernierEntrainement", type="datetime", nullable=true)
      */
-    private $dernierentrainement;
+    private $dernierEntrainement;
 
     /**
      * @var integer
@@ -88,7 +88,7 @@ class Pokemon
      */
     public function setIdDresseur($idDresseur)
     {
-        $this->iddresseur = $idDresseur;
+        $this->idDresseur = $idDresseur;
 
         return $this;
     }
@@ -200,75 +200,75 @@ class Pokemon
     }
 
     /**
-     * Set prixvente
+     * Set prixVente
      *
-     * @param integer $prixvente
+     * @param integer $prixVente
      *
      * @return Pokemon
      */
-    public function setPrixvente($prixvente)
+    public function setPrixvente($prixVente)
     {
-        $this->prixvente = $prixvente;
+        $this->prixVente = $prixVente;
 
         return $this;
     }
 
     /**
-     * Get prixvente
+     * Get prixVente
      *
      * @return integer
      */
     public function getPrixvente()
     {
-        return $this->prixvente;
+        return $this->prixVente;
     }
 
     /**
-     * Set envente
+     * Set enVente
      *
-     * @param boolean $envente
+     * @param boolean $enVente
      *
      * @return Pokemon
      */
-    public function setEnvente($envente)
+    public function setEnvente($enVente)
     {
-        $this->envente = $envente;
+        $this->enVente = $enVente;
 
         return $this;
     }
 
     /**
-     * Get envente
+     * Get enVente
      *
      * @return boolean
      */
     public function getEnvente()
     {
-        return $this->envente;
+        return $this->enVente;
     }
 
     /**
-     * Set dernierentrainement
+     * Set dernierEntrainement
      *
-     * @param \DateTime $dernierentrainement
+     * @param \DateTime $dernierEntrainement
      *
      * @return Pokemon
      */
-    public function setDernierentrainement($dernierentrainement)
+    public function setDernierentrainement($dernierEntrainement)
     {
-        $this->dernierentrainement = $dernierentrainement;
+        $this->dernierEntrainement = $dernierEntrainement;
 
         return $this;
     }
 
     /**
-     * Get dernierentrainement
+     * Get dernierEntrainement
      *
      * @return \DateTime
      */
     public function getDernierentrainement()
     {
-        return $this->dernierentrainement;
+        return $this->dernierEntrainement->format("Y-m-d H:i:s");
     }
 
     /**
