@@ -29,7 +29,10 @@ class PokemonRepository extends EntityRepository
 
         $pok["types"] = array($especePokemon->getType1(), $especePokemon->getType2());
         $pok["nom"] = $especePokemon->getNom();
-        $pok["evolution"] = $especePokemon->getEvolution();
+        if($especePokemon->getEvolution() == 'n')
+            $pok["evolution"] = "Pokémon de base";
+        else
+            $pok["evolution"] = "Pokémon d'évolution";
         $pok["courbe_XP"] = $especePokemon->getCourbeXp();
 
         $pok["ceilxp"] = $this->maxXPForCurrentLevel($pok["courbe_XP"], $pokemon->getNiveau());

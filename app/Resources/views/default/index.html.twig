@@ -4,8 +4,10 @@
         <link rel="stylesheet" href="{{ asset('static/home.css') }}">
     {% endblock %}
     {% block menu %}
-        <a class="signup" href='{{ path('inscription') }}'>Inscription</a>
-        <a class="login" href='{{ path('connexion') }}'>Connexion</a>
+        <nav class="user">
+            <a class="signup" href='{{ path('inscription') }}'>Inscription</a>
+            <a class="login" href='{{ path('connexion') }}'>Connexion</a>
+        </nav>
     {% endblock %}
 {% block body %}
 {% endblock %}

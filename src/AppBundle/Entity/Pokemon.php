@@ -268,6 +268,9 @@ class Pokemon
      */
     public function getDernierentrainement()
     {
+        if(!$this->dernierEntrainement)
+            return null;
+        
         return $this->dernierEntrainement->format("Y-m-d H:i:s");
     }
 

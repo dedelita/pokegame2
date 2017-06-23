@@ -15,27 +15,26 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
 
-    <body>
+    <body class="{% block class %}home{% endblock %}">
         <header>
             <div class="wrap">
                 <h1>PokéGame</h1>
 
-                <nav class="user">
-                    {% block menu %}
+                {% block menu %}
+                    <nav class="user">
                         <span class="money">{{ app.user.nbPieces }} <i class="fa fa-fw fa-usd"></i></span>
                         <a class="logout" href="{{ path('deconnexion') }}">Déconnexion</a>
-                        <nav class="pages">
-                            <a href="{{ path('pokemons') }}">Mes Pokémons</a>
-                            <a href="{{ path('annonces') }}">Acheter</a>
-                        </nav>
-                    {% endblock %}
-                </nav>
+                    </nav>
+                    <nav class="pages">
+                        <a href="{{ path('pokemons') }}">Mes Pokémons</a>
+                        <a href="{{ path('annonces') }}">Acheter</a>
+                    </nav>
+                {% endblock %}
             </div>
         </header>
 
-        <div class="{% block class %}home{% endblock %}">
-        {% block body %}{% endblock %}
-        </div>
+        <main>{% block body %}{% endblock %}</main>
+
         {% block javascripts %}{% endblock %}
         <footer>
             <p>Techno Web 2017 - L3 MIAGE Apprentissage - Université Paris I Panthéon-Sorbonne<p>

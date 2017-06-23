@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block class %}pokemon-detail{% endblock %}
+{% block class %}detail{% endblock %}
 
 {% block body %}
     <div class="pokemon-detail">
@@ -16,7 +16,9 @@
 
             <ul class="types">
                 {% for type in pokemon.types %}
-                    <li>{{ type }}</li>
+                    {% if type != "" %}
+                        <li>{{ type }}</li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>
@@ -28,7 +30,7 @@
         <li class="stat-xp">
             <div id="xp-graph"></div>
             <div class="inner">
-                <div><span>{{ pokemon.xp }}</span><span><?= $ceilxp ?></span></div>
+                <div><span>{{ pokemon.xp }}</span><span>{{ pokemon.ceilxp }}</span></div>
                 <div>XP</div>
             </div>
         </li>
