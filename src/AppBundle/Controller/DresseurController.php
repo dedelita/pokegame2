@@ -154,8 +154,12 @@ class DresseurController extends Controller
     public function jsonPokemonsAction(Request $request) {
         $especePokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:EspecePokemon");
 
-        $pokemons = $especePokemonsRepository->findAll();
+        $dresseur = $request->query->get('dresseur');
 
+        if($dresseur)
+            return $this->jsonPokemonsOfDresseurAction($request);
+
+        $pokemons = $especePokemonsRepository->findAll();
         $poks = array();
         $pok = array();
 
@@ -169,6 +173,7 @@ class DresseurController extends Controller
 
             $poks[] = $pok;
         }
+
         $response = new Response();
         $response->headers->set("Content-Type", "application/json");
         $response->setContent(json_encode($poks));
@@ -177,9 +182,41 @@ class DresseurController extends Controller
         return $response;
     }
 
-    public function jsonPokemonsOfDresseursAction() {
+    public function jsonPokemonAction($id) {
         $pokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:Pokemon");
-        $pokemons = $pokemonsRepository->findAll();
+        $pokemon = $pokemonsRepository->find($id);
+
+        $especePokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:EspecePokemon");
+
+        $espece = $especePokemonsRepository->find($pokemon->getIdEspece());
+
+        $pok = array();
+        $pok["id"] = $pokemon->getId();
+        $pok["idDresseur"] = $pokemon->getIdDresseur();
+        $pok["idEspece"] = $espece->getId();
+        $pok["nom"] = $espece->getNom();
+        $pok["courbeXp"] = $espece->getCourbeXp();
+        $pok["evolution"] = $espece->getEvolution();
+        $pok["type1"] = $espece->getType1();
+        $pok["type2"] = $espece->getType2();
+        $pok["niveau"] = $pokemon->getNiveau();
+        $pok["sexe"] = $pokemon->getSexe();
+        $pok["xp"] = $pokemon->getXp();
+        $pok["enVente"] = $pokemon->getEnVente();
+        $pok["prixVente"] = $pokemon->getPrixVente();
+        $pok["dernierEntrainement"] = $pokemon->getDernierEntrainement();
+
+        $response = new Response();
+        $response->headers->set("Content-Type", "application/json");
+        $response->setContent(json_encode($pok, JSON_PRETTY_PRINT));
+        $response->setCharset("utf-8");
+
+        return $response;
+    }
+
+    public function jsonPokemonsOfDresseurAction($id) {
+        $pokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:Pokemon");
+        $pokemons = $pokemonsRepository->findByIdDresseur($id);
 
 
         $especePokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:EspecePokemon");
@@ -210,7 +247,7 @@ class DresseurController extends Controller
 
         $response = new Response();
         $response->headers->set("Content-Type", "application/json");
-        $response->setContent(json_encode($poks));
+        $response->setContent(json_encode($poks, JSON_PRETTY_PRINT));
         $response->setCharset("utf-8");
 
         return $response;

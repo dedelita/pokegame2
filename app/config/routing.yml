@@ -46,6 +46,6 @@ json_pokemons:
     defaults: { _controller: AppBundle:Dresseur:jsonPokemons }
     path: /json/pokemons
 
-json_pokemons_of_dresseurs:
-    defaults: { _controller: AppBundle:Dresseur:jsonPokemonsOfDresseurs }
-    path: /json/dresseurs/pokemons
+json_pokemon:
+    defaults: { _controller: AppBundle:Dresseur:jsonPokemon }
+    path: /json/pokemons/{id}
