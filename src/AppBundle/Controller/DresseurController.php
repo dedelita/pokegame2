@@ -52,6 +52,9 @@ class DresseurController extends Controller
     }
 
     public function loginAction(Request $request, AuthenticationUtils $authUtils) {
+        if($this->getUser())
+            return $this->redirectToRoute("pokemons");
+
         $error = $authUtils->getLastAuthenticationError();
 
         $lastUsername = $authUtils->getLastUsername();
@@ -63,6 +66,9 @@ class DresseurController extends Controller
     }
 
     public function inscriptionAction(Request $request) {
+        if($this->getUser())
+            return $this->redirectToRoute("pokemons");
+
         $dresseur = new Dresseur();
         $form = $this->createFormBuilder($dresseur)
             ->add("login", TextType::class, array("label" => "Nom"))
