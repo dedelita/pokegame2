@@ -155,7 +155,6 @@ class DresseurController extends Controller
         $especePokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:EspecePokemon");
 
         $dresseur = $request->query->get('dresseur');
-
         if($dresseur)
             return $this->jsonPokemonsOfDresseurAction($request);
 
@@ -187,7 +186,6 @@ class DresseurController extends Controller
         $pokemon = $pokemonsRepository->find($id);
 
         $especePokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:EspecePokemon");
-
         $espece = $especePokemonsRepository->find($pokemon->getIdEspece());
 
         $pok = array();
@@ -217,7 +215,6 @@ class DresseurController extends Controller
     public function jsonPokemonsOfDresseurAction($id) {
         $pokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:Pokemon");
         $pokemons = $pokemonsRepository->findByIdDresseur($id);
-
 
         $especePokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:EspecePokemon");
 
