@@ -71,11 +71,11 @@ class DresseurController extends Controller
 
         $dresseur = new Dresseur();
         $form = $this->createFormBuilder($dresseur)
-            ->add("login", TextType::class, array("label" => "Nom"))
-            ->add("email", EmailType::class, array("label" => "Mail"))
-            ->add("password", PasswordType::class, array("label" => "Mot de passe"))
-            ->add("conf_password", PasswordType::class, array("label" => "Confirmer", "mapped" => false))
-            ->add("pokemon", ChoiceType::class, array("label" => "Votre 1er pokémon",
+            ->add("login", TextType::class, array("label" => "Nom", 'required' => true))
+            ->add("email", EmailType::class, array("label" => "Mail", 'required' => true))
+            ->add("password", PasswordType::class, array("label" => "Mot de passe", 'required' => true))
+            ->add("conf_password", PasswordType::class, array("label" => "Confirmer", 'required' => true, "mapped" => false))
+            ->add("pokemon", ChoiceType::class, array("label" => "Votre 1er pokémon", 'required' => true,
                 'choices' => array("Bulbizarre" => "Bulbizarre", "Carapuce" => "Carapuce", "Salamèche" => "Salamèche"), "mapped" => false))
             ->add("submit", SubmitType::class, array("label" => "Go"))
             ->getForm();
