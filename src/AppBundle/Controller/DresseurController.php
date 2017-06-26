@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Form\FormError;
 
@@ -41,8 +42,8 @@ class DresseurController extends Controller
         return $this->render('pokemons.html.twig', array("dresseur" => $dresseur, "pokemons" => $pokemons));
     }
 
-    public function getPokemonAction(Request $request) {
-        $id = $request->get('id');
+    public function getPokemonAction($id) {
+        //$id = $request->get('id');
 
         $pokemonsRepository = $this->getDoctrine()->getRepository('AppBundle:Pokemon');
         $pokemon = $pokemonsRepository->getInfosPokemon($id);
@@ -148,5 +149,70 @@ class DresseurController extends Controller
         $pokemonRepository->acheterPokemon($id, $idDresseur);
 
         return $this->redirectToRoute('annonces');
+    }
+
+    public function jsonPokemonsAction(Request $request) {
+        $especePokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:EspecePokemon");
+
+        $pokemons = $especePokemonsRepository->findAll();
+
+        $poks = array();
+        $pok = array();
+
+        foreach ($pokemons as $p) {
+            $pok["id"] = $p->getId();
+            $pok["nom"] = $p->getNom();
+            $pok["courbeXp"] = $p->getCourbeXp();
+            $pok["evolution"] = $p->getEvolution();
+            $pok["type1"] = $p->getType1();
+            $pok["type2"] = $p->getType2();
+
+            $poks[] = $pok;
+        }
+        $response = new Response();
+        $response->headers->set("Content-Type", "application/json");
+        $response->setContent(json_encode($poks));
+        $response->setCharset("utf-8");
+
+        return $response;
+    }
+
+    public function jsonPokemonsOfDresseursAction() {
+        $pokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:Pokemon");
+        $pokemons = $pokemonsRepository->findAll();
+
+
+        $especePokemonsRepository = $this->getDoctrine()->getRepository("AppBundle:EspecePokemon");
+
+        $poks = array();
+        $pok = array();
+
+        foreach ($pokemons as $p) {
+            $espece = $especePokemonsRepository->find($p->getIdEspece());
+
+            $pok["id"] = $p->getId();
+            $pok["idDresseur"] = $p->getIdDresseur();
+            $pok["idEspece"] = $espece->getId();
+            $pok["nom"] = $espece->getNom();
+            $pok["courbeXp"] = $espece->getCourbeXp();
+            $pok["evolution"] = $espece->getEvolution();
+            $pok["type1"] = $espece->getType1();
+            $pok["type2"] = $espece->getType2();
+            $pok["niveau"] = $p->getNiveau();
+            $pok["sexe"] = $p->getSexe();
+            $pok["xp"] = $p->getXp();
+            $pok["enVente"] = $p->getEnVente();
+            $pok["prixVente"] = $p->getPrixVente();
+            $pok["dernierEntrainement"] = $p->getDernierEntrainement();
+
+            $poks[] = $pok;
+        }
+
+        $response = new Response();
+        $response->headers->set("Content-Type", "application/json");
+        $response->setContent(json_encode($poks));
+        $response->setCharset("utf-8");
+
+        return $response;
     }
 }
