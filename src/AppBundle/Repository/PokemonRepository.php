@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Pokemon;
 use Doctrine\ORM\EntityRepository;
 
 class PokemonRepository extends EntityRepository
@@ -41,7 +42,8 @@ class PokemonRepository extends EntityRepository
     }
 
     public function newPokemon($idDresseur, $nom) {
-        $espece = $this->findOneByNom($nom);
+        $especePokemonRepository = $this->_em->getRepository('AppBundle:EspecePokemon');
+        $espece = $especePokemonRepository->findOneByNom($nom);
 
         $pokemon = new Pokemon();
         $pokemon->setIdDresseur($idDresseur);

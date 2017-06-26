@@ -82,7 +82,8 @@ class DresseurController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->getDoctrine()->getEntityManager();
+
             $dre = $em->getRepository("AppBundle:Dresseur")->findOneByEmail($dresseur->getEmail());
             if($dre)
                 $form->addError(new FormError('Mail déjà utilisé'));
@@ -105,6 +106,7 @@ class DresseurController extends Controller
                     $form->addError(new FormError('Les mots de passe ne correspondent pas'));
                 }
             }
+
             return $this->redirectToRoute("connexion");
         } else
             return $this->render("inscription.html.twig", array('form' => $form->createView()));
